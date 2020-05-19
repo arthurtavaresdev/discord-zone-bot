@@ -36,8 +36,10 @@ Audios de Memes:
   !paodebatata
   !senhora
   !muitoforte
- 
+  !mula
+
 Audios Meu querido:
+  !meuquerido
   !22k
   !sergio
   !urisse
@@ -46,7 +48,8 @@ Audios Meu querido:
   !luisa 
   !gago
   !tuzao
-  !joni
+  !jonny
+
 `;
 
 client.on("message", (msg) => {
@@ -58,7 +61,7 @@ client.on("message", (msg) => {
     moises: () => playAudio('https://www.youtube.com/watch?v=6GfqT-HKsY8'),
     mentira: () => playAudio('https://www.youtube.com/watch?v=ViesudGoHKM'),
     tabom: () => playAudio('https://www.youtube.com/watch?v=hs91TFUdqdU'),
-    vocair: () => playAudio('https://www.youtube.com/watch?v=z-6u1-3DRh8'),
+    vocair: () => playAudio('https://www.youtube.com/watch?v=ihJp_tWnvQc'),
     aiai: () => playAudio('https://www.youtube.com/watch?v=yCJV6VrOxBA'),
     marilene: () => playAudio('https://www.youtube.com/watch?v=z7-ZYXpJ_EU'),
     eusoulouco: () => playAudio('https://www.youtube.com/watch?v=TpAu95MjO0I'),
@@ -72,18 +75,20 @@ client.on("message", (msg) => {
     paodebatata: () => playAudio('https://www.youtube.com/watch?v=sGci6pVA4D8'),
     senhora: () => playAudio('https://www.youtube.com/watch?v=sNOw2WVIYow'),
     muitoforte: () => playAudio('https://www.youtube.com/watch?v=KfjAQ9glCxE'),
+    mula: () => playAudio('https://youtu.be/FzAWnKP5hpU'),
+
 
     /** Audios para membros */
-    '22k': () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-    sergio: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-    urisse: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-    makense: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-    josi: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-    luisa: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-    gago: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-    tuzao: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-    joni: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
-
+    meuquerido: () => playAudio('https://www.youtube.com/watch?v=ShWb9wIWp7c'),
+    '22k': () => playAudio('https://youtu.be/xpfsUqVEyHM'),
+    sergio: () => playAudio('https://www.youtube.com/watch?v=OCRxRZXdtDI'),
+    urisse: () => playAudio('https://www.youtube.com/watch?v=H2iAL0Rbq6g'),
+    makense: () => playAudio('https://www.youtube.com/watch?v=9wcg57VnkNI'),
+    josi: () => playAudio('https://www.youtube.com/watch?v=NFjzhT3qAA0'),
+    luisa: () => playAudio('https://www.youtube.com/watch?v=lzzM1k0bt7U'),
+    gago: () => playAudio('https://youtu.be/zDDT2JvglSk'),
+    tuzao: () => playAudio('https://www.youtube.com/watch?v=yOEa1YK-SDg'),
+    jonny: () => playAudio('https://www.youtube.com/watch?v=JXqXSfppOTY')
   }
 
 
@@ -143,9 +148,8 @@ client.on("message", (msg) => {
         commands.sair()
       }
       await msg.member.voiceChannel.join();
-      msg.member.voiceChannel.connection.playOpusStream(
-        await ytdl(link)
-      ).on('end', () => {
+      let stream = await ytdl(link);
+      msg.member.voiceChannel.connection.playOpusStream(stream).on('end', () => {
         commands.sair()
       });
     } catch {
