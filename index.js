@@ -58,7 +58,7 @@ client.on("message", (msg) => {
     moises: () => playAudio('https://www.youtube.com/watch?v=6GfqT-HKsY8'),
     mentira: () => playAudio('https://www.youtube.com/watch?v=ViesudGoHKM'),
     tabom: () => playAudio('https://www.youtube.com/watch?v=hs91TFUdqdU'),
-    vocair: () => playAudio('https://www.youtube.com/watch?v=ihJp_tWnvQc'),
+    vocair: () => playAudio('https://www.youtube.com/watch?v=z-6u1-3DRh8'),
     aiai: () => playAudio('https://www.youtube.com/watch?v=yCJV6VrOxBA'),
     marilene: () => playAudio('https://www.youtube.com/watch?v=z7-ZYXpJ_EU'),
     eusoulouco: () => playAudio('https://www.youtube.com/watch?v=TpAu95MjO0I'),

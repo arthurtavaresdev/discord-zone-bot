@@ -9,7 +9,7 @@ O Bot manda memes, adicionados pela comunidade e toca alguns audios, personaliza
 ## Instalação 
 Para as funções de música instalar ffmpeg.
 
-### Ubuntutdl-core-discord
+### Ubuntu
 ```console
 sudo apt install ffmpeg
 ```
