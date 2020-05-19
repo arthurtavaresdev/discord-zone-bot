@@ -71,9 +71,18 @@ client.on("message", (msg) => {
     querocafe: () => playAudio('https://www.youtube.com/watch?v=VxRpkfcXEpA'),
     paodebatata: () => playAudio('https://www.youtube.com/watch?v=sGci6pVA4D8'),
     senhora: () => playAudio('https://www.youtube.com/watch?v=sNOw2WVIYow'),
-    muitoforte: () => playAudio('https://www.youtube.com/watch?v=KfjAQ9glCxE')
+    muitoforte: () => playAudio('https://www.youtube.com/watch?v=KfjAQ9glCxE'),
 
     /** Audios para membros */
+    '22k': () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
+    sergio: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
+    urisse: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
+    makense: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
+    josi: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
+    luisa: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
+    gago: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
+    tuzao: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
+    joni: () => msg.channel.send('Infelizmente este audio está indisponivel ! (Manda o Marcelo upar essa merda)'),
 
   }
 
