@@ -3,8 +3,11 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const ytdl = require("ytdl-core-discord");
 const prefix = "!";
-const meme = require("./randomFile");
-const downloder = require("./downloadMeme");
+const meme = require("./utils/randomFile");
+const downloader = require("./utils/downloaderImage");
+
+
+client.login(process.env.TOKEN);
 
 const memberLinks = {
   meuquerido: 'https://www.youtube.com/watch?v=ShWb9wIWp7c',
@@ -20,32 +23,35 @@ const memberLinks = {
 }
 
 
-client.login(process.env.TOKEN);
-
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
+
+const members = {
+  '233266768095870977': 'tuzao',
+  '352169790212669460': '22k',
+  '233271179794710530': 'urisse',
+  '267081042937118721': 'gago',
+  '254789073691082753': 'joni',
+  '425017676201590804': 'sergio',
+  '370694977757380608': 'luisa',
+  '204328361164537856': 'josi',
+  '233266831098380288': 'makense'
+}
+
 client.on('voiceStateUpdate', (oldMember, newMember) => {
   const voiceChannel = newMember.voiceChannel;
-  const members = {
-    '233266768095870977': 'tuzao',
-    '352169790212669460': '22k',
-    '233271179794710530': 'urisse',
-    '267081042937118721': 'gago',
-    '254789073691082753': 'joni',
-    '425017676201590804': 'sergio',
-    '370694977757380608': 'luisa',
-    '204328361164537856': 'josi',
-    '233266831098380288': 'makense'
-  }
+  const oldMemberChannel = oldMember.voiceChannel;
 
-  if (voiceChannel) {
+  console.log(newMember);
+
+  if (voiceChannel && !oldMemberChannel) {
     const memberId = newMember.user.id;
     let member = members[memberId];
     if (member) {
       playAudio(memberLinks[member], voiceChannel)
-    } else if (memberId != '712096472761368576') {
+    } else if (!newMember.user.bot) {
       playAudio(memberLinks['meuquerido'], voiceChannel)
     }
   }
@@ -176,7 +182,7 @@ client.on("message", (msg) => {
           return;
         }
 
-        await downloder.default(meme.url, meme.filename);
+        await downloader.default(meme.url, meme.filename);
         msg.reply("Memes adicionados com sucesso");
       } catch (e) {
         msg.reply("Ocorreu um erro ao enviar a imagem");
