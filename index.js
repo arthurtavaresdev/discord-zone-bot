@@ -48,7 +48,7 @@ Audios Meu querido:
   !luisa 
   !gago
   !tuzao
-  !jonny
+  !joni
 
 `;
 
@@ -88,7 +88,7 @@ client.on("message", (msg) => {
     luisa: () => playAudio('https://www.youtube.com/watch?v=lzzM1k0bt7U'),
     gago: () => playAudio('https://youtu.be/zDDT2JvglSk'),
     tuzao: () => playAudio('https://www.youtube.com/watch?v=yOEa1YK-SDg'),
-    jonny: () => playAudio('https://www.youtube.com/watch?v=JXqXSfppOTY')
+    joni: () => playAudio('https://www.youtube.com/watch?v=JXqXSfppOTY')
   }
 
 
