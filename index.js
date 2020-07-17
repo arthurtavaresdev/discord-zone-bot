@@ -12,14 +12,17 @@ client.login(process.env.TOKEN);
 const memberLinks = {
   meuquerido: 'https://www.youtube.com/watch?v=ShWb9wIWp7c',
   '22k': 'https://youtu.be/xpfsUqVEyHM',
-  sergio: 'https://www.youtube.com/watch?v=OCRxRZXdtDI',
+  leon: 'https://youtu.be/0BfJvyHBOII',
   urisse: 'https://www.youtube.com/watch?v=H2iAL0Rbq6g',
   makense: 'https://www.youtube.com/watch?v=9wcg57VnkNI',
   josi: 'https://www.youtube.com/watch?v=NFjzhT3qAA0',
   luisa: 'https://www.youtube.com/watch?v=lzzM1k0bt7U',
   gago: 'https://youtu.be/zDDT2JvglSk',
   tuzao: 'https://www.youtube.com/watch?v=yOEa1YK-SDg',
-  joni: 'https://www.youtube.com/watch?v=JXqXSfppOTY'
+  joni: 'https://www.youtube.com/watch?v=JXqXSfppOTY',
+  scopel: 'https://youtu.be/15lba7DIvkQ',
+  shacal: 'https://youtu.be/l_pBaFk73rg',
+  jm: 'https://youtu.be/4WuU7XXOADM'
 }
 
 
@@ -34,18 +37,18 @@ const members = {
   '233271179794710530': 'urisse',
   '267081042937118721': 'gago',
   '254789073691082753': 'joni',
-  '425017676201590804': 'sergio',
+  '233795749916180490': 'leon',
   '370694977757380608': 'luisa',
   '204328361164537856': 'josi',
-  '233266831098380288': 'makense'
+  '233266831098380288': 'makense',
+  '505751378145050629': 'scopel',
+  '233303134804508672': 'shacal',
+  '335991054585167872': 'jm'
 }
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
   const voiceChannel = newMember.voiceChannel;
   const oldMemberChannel = oldMember.voiceChannel;
-
-  console.log(newMember);
-
   if (voiceChannel && !oldMemberChannel) {
     const memberId = newMember.user.id;
     let member = members[memberId];
@@ -104,7 +107,7 @@ Audios de Memes:
 Audios Meu querido:
   !meuquerido
   !22k
-  !sergio
+  !leon
   !urisse
   !makense
   !josi
@@ -112,7 +115,6 @@ Audios Meu querido:
   !gago
   !tuzao
   !joni
-
 `;
 
 client.on("message", (msg) => {
@@ -140,18 +142,6 @@ client.on("message", (msg) => {
     muitoforte: () => playAudio('https://www.youtube.com/watch?v=KfjAQ9glCxE', msg.member.voiceChannel),
     mula: () => playAudio('https://youtu.be/FzAWnKP5hpU', msg.member.voiceChannel),
 
-
-    /** Audios para membros */
-    meuquerido: () => playAudio(memberLinks.meuquerido, msg.member.voiceChannel),
-    '22k': () => playAudio(memberLinks['22k'], msg.member.voiceChannel),
-    sergio: () => playAudio(memberLinks.sergio, msg.member.voiceChannel),
-    urisse: () => playAudio(memberLinks.urisse, msg.member.voiceChannel),
-    makense: () => playAudio(memberLinks.makense, msg.member.voiceChannel),
-    josi: () => playAudio(memberLinks.josi, msg.member.voiceChannel),
-    luisa: () => playAudio(memberLinks.luisa, msg.member.voiceChannel),
-    gago: () => playAudio(memberLinks.gago, msg.member.voiceChannel),
-    tuzao: () => playAudio(memberLinks.tuzao, msg.member.voiceChannel),
-    joni: () => playAudio(memberLinks.joni, msg.member.voiceChannel),
   }
 
 
@@ -204,7 +194,16 @@ client.on("message", (msg) => {
   };
 
   try {
-    let command = commands[userCommand] ? commands[userCommand] : audiosCommands[userCommand];
+    let command = commands[userCommand];
+
+    if(!command) {
+      command = audiosCommands[userCommand];
+    }
+
+    if(!command && Object.values(members).includes(userCommand)){
+      playAudio(memberLinks[userCommand],msg.member.voiceChannel,msg);
+    }
+
     if (command) {
       command();
     }
