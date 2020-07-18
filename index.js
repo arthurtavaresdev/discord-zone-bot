@@ -115,6 +115,9 @@ Audios Meu querido:
   !gago
   !tuzao
   !joni
+  !scopel
+  !jm
+  !shacal
 `;
 
 client.on("message", (msg) => {
@@ -195,7 +198,7 @@ client.on("message", (msg) => {
 
   try {
     let command = commands[userCommand];
-
+    console.log(userCommand);
     if(!command) {
       command = audiosCommands[userCommand];
     }
