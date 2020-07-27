@@ -103,6 +103,7 @@ Audios de Memes:
   !senhora
   !muitoforte
   !mula
+  !paraocarro
 
 Audios Meu querido:
   !meuquerido
@@ -144,7 +145,7 @@ client.on("message", (msg) => {
     senhora: () => playAudio('https://www.youtube.com/watch?v=sNOw2WVIYow', msg.member.voiceChannel),
     muitoforte: () => playAudio('https://www.youtube.com/watch?v=KfjAQ9glCxE', msg.member.voiceChannel),
     mula: () => playAudio('https://youtu.be/FzAWnKP5hpU', msg.member.voiceChannel),
-
+    paraocarro: () => playAudio('https://youtu.be/buVRBF9HGH8', msg.member.voiceChannel),
   }
 
 
