@@ -50,10 +50,10 @@ const members = {
 
 let queue = new Queue();
 
-client.on('voiceStateUpdate',  async(oldMember, newMember) => {
+client.on('voiceStateUpdate', async (oldMember, newMember) => {
     const voiceChannel = newMember.voiceChannel;
     const oldMemberChannel = oldMember.voiceChannel;
-    if (voiceChannel && !oldMemberChannel ) {
+    if (voiceChannel && !oldMemberChannel) {
         const memberId = newMember.user.id;
         let member = members[memberId];
         if (member) {
@@ -66,21 +66,29 @@ client.on('voiceStateUpdate',  async(oldMember, newMember) => {
             queue.enqueue({ link: memberLinks['meuquerido'], voiceChannel });
         }
 
-        playMemberAudio();
+        await playMemberAudio();
     }
 });
 
 let running = false;
 async function playMemberAudio() {
     while (!queue.isEmpty()) {
-        try{
-            if(!running){
+        try {
+            if (!running) {
                 console.log('running');
                 const item = queue.dequeue();
-                await playAudio(item.link, item.voiceChannel);
-                running = true;
-            }   
-        }catch(e){
+
+                let nextLink = null;
+                if (queue.peek() !== undefined) {
+                    nextLink = queue.peek().link;
+                }
+
+                if (item.link !== nextLink) {
+                    await playAudio(item.link, item.voiceChannel);
+                    running = true;
+                }
+            }
+        } catch (e) {
             running = false;
             console.error(e);
         }
@@ -94,17 +102,21 @@ async function playAudio(link, voiceChannel, msg = null) {
     try {
 
         if (!voiceChannel.connection) await voiceChannel.join();
-        
+
         let stream = await ytdl(link);
-        voiceChannel.connection.playOpusStream(stream).on('end', () => {
+        await voiceChannel.connection.playOpusStream(stream).on('end', async () => {
             running = false;
-            voiceChannel.leave()
+            await voiceChannel.leave();
         });
     } catch (e) {
+        running = false;
+
         if (msg) {
             msg.channel.send("Ocorreu um erro ao reproduzir o audio do vídeo");
         }
+
         console.error("Ocorreu um erro ao reproduzir o audio do vídeo", e);
+        await new Promise(sleep => setTimeout(sleep, 1000));
     }
 }
 
