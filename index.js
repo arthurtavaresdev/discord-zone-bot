@@ -75,17 +75,17 @@ async function playMemberAudio() {
     while (!queue.isEmpty()) {
         try {
             if (!running) {
-                console.log('running');
                 const item = queue.dequeue();
-
+                
                 let nextLink = null;
                 if (queue.peek() !== undefined) {
                     nextLink = queue.peek().link;
                 }
-
+                
                 if (item.link !== nextLink) {
-                    await playAudio(item.link, item.voiceChannel);
+                    console.log('running');
                     running = true;
+                    await playAudio(item.link, item.voiceChannel);
                 }
             }
         } catch (e) {
@@ -94,7 +94,7 @@ async function playMemberAudio() {
         }
 
         // Só pra não flodarem.
-        await new Promise(sleep => setTimeout(sleep, 400));
+        await new Promise(sleep => setTimeout(sleep, 15000));
     }
 }
 
