@@ -48,10 +48,9 @@ const members = {
     '335991054585167872': 'jm'
 }
 
-const timeout = 2;
 let queue = new Queue();
 
-client.on('voiceStateUpdate', (oldMember, newMember) => {
+client.on('voiceStateUpdate',  async(oldMember, newMember) => {
     const voiceChannel = newMember.voiceChannel;
     const oldMemberChannel = oldMember.voiceChannel;
     if (voiceChannel && !oldMemberChannel ) {
@@ -66,30 +65,39 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
         } else if (!newMember.user.bot) {
             queue.enqueue({ link: memberLinks['meuquerido'], voiceChannel });
         }
-        recursive_play(queue);
+
+        playMemberAudio();
     }
 });
 
-async function recursive_play(queue) {
-    if (!queue.isEmpty()) {
-        let item = queue.dequeue();
+let running = false;
+async function playMemberAudio() {
+    while (!queue.isEmpty()) {
         try{
-            await playAudio(item.link, item.voiceChannel);
+            if(!running){
+                console.log('running');
+                const item = queue.dequeue();
+                await playAudio(item.link, item.voiceChannel);
+                running = true;
+            }   
         }catch(e){
+            running = false;
             console.error(e);
         }
-        recursive_play(queue);
+
+        // Só pra não flodarem.
+        await new Promise(sleep => setTimeout(sleep, 400));
     }
 }
 
 async function playAudio(link, voiceChannel, msg = null) {
     try {
-        if (voiceChannel) {
-            voiceChannel.leave()
-        }
-        await voiceChannel.join();
+
+        if (!voiceChannel.connection) await voiceChannel.join();
+        
         let stream = await ytdl(link);
         voiceChannel.connection.playOpusStream(stream).on('end', () => {
+            running = false;
             voiceChannel.leave()
         });
     } catch (e) {
