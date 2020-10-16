@@ -254,7 +254,7 @@ client.on("message", (msg) => {
       }),
     mula: () =>
       queue.enqueue({
-        link: "https://youtu.be/FzAWnKP5hpU",
+        link: "https://www.youtube.com/watch?v=ZOOwJHneaqs",
         voiceChannel: msg.member.voiceChannel,
       }),
     paraocarro: () =>
