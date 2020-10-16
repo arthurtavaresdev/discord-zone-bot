@@ -65,12 +65,12 @@ client.on("voiceStateUpdate", async (oldMember, newMember) => {
       queue.enqueue({ link: memberLinks["meuquerido"], voiceChannel });
     }
 
-    await playMemberAudio();
+    await playQueue();
   }
 });
 
 let running = false;
-async function playMemberAudio() {
+async function playQueue() {
   while (!queue.isEmpty()) {
     try {
       if (!running) {
@@ -313,10 +313,12 @@ client.on("message", (msg) => {
   };
 
   try {
+    let audio = false;
     let command = commands[userCommand];
     console.log(userCommand);
     if (!command) {
       command = audiosCommands[userCommand];
+      audio = true;
     }
 
     if (!command && Object.values(members).includes(userCommand)) {
@@ -325,6 +327,9 @@ client.on("message", (msg) => {
 
     if (command) {
       command();
+      if (audio) {
+        playQueue();
+      }
     }
   } catch (e) {
     msg.channel.sender("Ocorreu algum erro, contate o criador do bot");
