@@ -72,7 +72,6 @@ client.on("voiceStateUpdate", async (oldMember, newMember) => {
 let running = false;
 async function playQueue() {
   while (!queue.isEmpty()) {
-    try {
       if (!running) {
         const item = queue.dequeue();
 
@@ -82,19 +81,10 @@ async function playQueue() {
         }
 
         if (item.link !== nextLink) {
-          console.log("running");
           running = true;
           await playAudio(item.link, item.voiceChannel);
         }
-      }
-    } catch (e) {
-      running = false;
-      console.error(e);
     }
-
-    // Só pra não flodarem.
-    await new Promise((sleep) => setTimeout(sleep, 15000));
-  }
 }
 
 async function playAudio(link, voiceChannel, msg = null) {
