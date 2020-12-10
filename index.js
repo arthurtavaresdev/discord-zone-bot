@@ -81,10 +81,12 @@ async function playQueue() {
         }
 
         if (item.link !== nextLink) {
+          console.log("running");
           running = true;
           await playAudio(item.link, item.voiceChannel);
         }
-    }
+      }
+  }
 }
 
 async function playAudio(link, voiceChannel, msg = null) {
