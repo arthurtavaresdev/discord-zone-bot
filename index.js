@@ -1,7 +1,7 @@
 require("dotenv").config();
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const ytdl = require("ytdl-core-discord");
+const ytdl = require("./utils/audio");
 
 const prefix = "!";
 
@@ -65,27 +65,31 @@ client.on("voiceStateUpdate", async (oldMember, newMember) => {
       queue.enqueue({ link: memberLinks["meuquerido"], voiceChannel });
     }
 
-    await playQueue();
+    try {
+      await playQueue();
+    } catch (e) {
+      console.error(e);
+    }
   }
 });
 
 let running = false;
 async function playQueue() {
   while (!queue.isEmpty()) {
-      if (!running) {
-        const item = queue.dequeue();
+    if (!running) {
+      const item = queue.dequeue();
 
-        let nextLink = null;
-        if (queue.peek() !== undefined) {
-          nextLink = queue.peek().link;
-        }
-
-        if (item.link !== nextLink) {
-          console.log("running");
-          running = true;
-          await playAudio(item.link, item.voiceChannel);
-        }
+      let nextLink = null;
+      if (queue.peek() !== undefined) {
+        nextLink = queue.peek().link;
       }
+
+      if (item.link !== nextLink) {
+        console.log("running");
+        running = true;
+        return await playAudio(item.link, item.voiceChannel);
+      }
+    }
   }
 }
 

@@ -15,9 +15,11 @@
     "dotenv": "^8.2.0",
     "ffmpeg": "^0.0.4",
     "fluent-ffmpeg": "^2.1.2",
+    "prism-media": "^1.2.3",
     "request": "^2.88.2",
     "sqlite3": "^4.2.0",
-    "ytdl-core-discord": "^1.2.0"
+    "ytdl-core": "^4.1.4",
+    "ytdl-core-discord": "^1.2.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
