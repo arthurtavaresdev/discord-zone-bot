@@ -1,13 +1,14 @@
 require("dotenv").config();
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const ytdl = require("./utils/audio");
+const { playAudio } = require("./utils/audio");
+const util = require('util');
 
 const prefix = "!";
 
 const meme = require("./utils/randomFile");
 const downloader = require("./utils/downloaderImage");
-const Queue = require("./utils/queue");
+let queue = new Map();
 
 client.login(process.env.TOKEN);
 
@@ -29,7 +30,7 @@ const memberLinks = {
 };
 
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}`);
+  console.log(`Logged in as ${client.user.username}`);
 });
 
 const members = {
@@ -48,71 +49,26 @@ const members = {
   "403860012532760576": "edu",
 };
 
-let queue = new Queue();
 
-client.on("voiceStateUpdate", async (oldMember, newMember) => {
-  const voiceChannel = newMember.voiceChannel;
-  const oldMemberChannel = oldMember.voiceChannel;
+client.on("voiceStateUpdate",  (oldMember, newMember) => {
+  const voiceChannel = newMember.channel;
+  const oldMemberChannel = oldMember.channel;
   if (voiceChannel && !oldMemberChannel) {
-    const memberId = newMember.user.id;
-    let member = members[memberId];
-    if (member) {
-      queue.enqueue({
-        link: memberLinks[member],
-        voiceChannel,
-      });
-    } else if (!newMember.user.bot) {
-      queue.enqueue({ link: memberLinks["meuquerido"], voiceChannel });
-    }
-
+    const memberId = newMember.member.id;
     try {
-      await playQueue();
+      let member = members[memberId];
+      if (member) {
+       playAudio(client, newMember, memberLinks[member], queue);
+      } else if (!newMember.member.user.bot) {
+       playAudio(client,newMember,memberLinks["meuquerido"], queue);
+      }
     } catch (e) {
       console.error(e);
     }
   }
 });
 
-let running = false;
-async function playQueue() {
-  while (!queue.isEmpty()) {
-    if (!running) {
-      const item = queue.dequeue();
 
-      let nextLink = null;
-      if (queue.peek() !== undefined) {
-        nextLink = queue.peek().link;
-      }
-
-      if (item.link !== nextLink) {
-        console.log("running");
-        running = true;
-        return await playAudio(item.link, item.voiceChannel);
-      }
-    }
-  }
-}
-
-async function playAudio(link, voiceChannel, msg = null) {
-  try {
-    if (!voiceChannel.connection) await voiceChannel.join();
-
-    let stream = await ytdl(link);
-    await voiceChannel.connection.playOpusStream(stream).on("end", async () => {
-      running = false;
-      await voiceChannel.leave();
-    });
-  } catch (e) {
-    running = false;
-
-    if (msg) {
-      msg.channel.send("Ocorreu um erro ao reproduzir o audio do vídeo");
-    }
-
-    console.error("Ocorreu um erro ao reproduzir o audio do vídeo", e);
-    await new Promise((sleep) => setTimeout(sleep, 1000));
-  }
-}
 
 let helpMessage = `
 Comandos gerais:
@@ -157,123 +113,99 @@ Audios Meu querido:
   !shacal
 `;
 
-client.on("message", (msg) => {
+client.on("message",  (msg) => {
   const args = msg.content.slice(prefix.length).trim().split(/ +/g);
   const userCommand = args.shift().toLowerCase();
 
   const audiosCommands = {
     /** Tocando memes de altissima qualidade. */
-    moises: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=6GfqT-HKsY8",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    mentira: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=ViesudGoHKM",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    tabom: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=hs91TFUdqdU",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    vocair: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=ihJp_tWnvQc",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    aiai: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=yCJV6VrOxBA",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    marilene: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=z7-ZYXpJ_EU",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    eusoulouco: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=TpAu95MjO0I",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    burro: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=lOxSDaTfujU",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    irineu: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=Odu55a5QtTE",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    numsei: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=IHa5f4MWu1I",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    pele: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=-vut5q_Z3Rc",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    faliceu: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=8GIdYXBqu1s",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    demencia: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=-kDO0rvwyiE",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    querocafe: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=VxRpkfcXEpA",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    paodebatata: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=sGci6pVA4D8",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    senhora: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=sNOw2WVIYow",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    muitoforte: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=KfjAQ9glCxE",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    mula: () =>
-      queue.enqueue({
-        link: "https://www.youtube.com/watch?v=ZOOwJHneaqs",
-        voiceChannel: msg.member.voiceChannel,
-      }),
-    paraocarro: () =>
-      queue.enqueue({
-        link: "https://youtu.be/buVRBF9HGH8",
-        voiceChannel: msg.member.voiceChannel,
-      }),
+    play:  () =>  playAudio(client, msg, args, queue),
+    teste: () => playAudio(client, msg, "https://www.youtube.com/watch?v=9wcg57VnkNI", queue),
+    moises:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=6GfqT-HKsY8", queue),
+    mentira:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=ViesudGoHKM", queue),
+    tabom:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=hs91TFUdqdU", queue),
+    vocair:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=ihJp_tWnvQc", queue),
+    aiai:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=yCJV6VrOxBA", queue),
+    marilene:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=z7-ZYXpJ_EU", queue),
+    eusoulouco:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=TpAu95MjO0I", queue),
+    burro:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=lOxSDaTfujU", queue),
+    irineu:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=Odu55a5QtTE", queue),
+    numsei:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=IHa5f4MWu1I", queue),
+    pele:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=-vut5q_Z3Rc", queue),
+    faliceu:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=8GIdYXBqu1s", queue),
+    demencia:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=-kDO0rvwyiE", queue),
+    querocafe:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=VxRpkfcXEpA", queue),
+    paodebatata:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=sGci6pVA4D8", queue),
+    senhora:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=sNOw2WVIYow", queue),
+    muitoforte:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=KfjAQ9glCxE", queue),
+    mula:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=ZOOwJHneaqs", queue),
+    paraocarro:  () =>
+      playAudio(
+        client, msg, "https://www.youtube.com/watch?v=buVRBF9HGH8", queue),
   };
 
   const commands = {
     /** Comandos gerais */
+    queue: () => {
+      console.log(queue);
+      const serverQueue = queue.get(msg.guild.id)
+      if (!serverQueue || serverQueue.songs.length == 0) return msg.channel.send("❌ Não há nada tocando agora!")
+      if (serverQueue.songs.length == 1) return msg.channel.send("❌ A Fila está vazia!")
+      return msg.channel.send([
+        "__**Fila para a reprodução:**__",
+        serverQueue.songs.slice(1).map(song => `- ${song.title}`).join("\n"),
+        `**Tocando alguma:** ${serverQueue.songs[0].title}`
+      ].join("\n\n"));
+    },
     ajuda: () => msg.reply(helpMessage),
     help: () => msg.reply(helpMessage),
-    meme: async () => {
-      const file = await meme.randomFile();
+    meme:  () => {
+      const file = meme.randomFile();
       msg.reply("Um meme bolado pra tu consagrado", {
         files: [file],
       });
     },
     sair: () => {
-      if (msg.member.voiceChannel) msg.member.voiceChannel.leave();
+      msg.member.voice.channel.leave()
+      queue = new Map();
     },
-    adicionar: async () => {
+    adicionar:  () => {
       try {
         let meme = msg.attachments.first();
 
@@ -287,7 +219,7 @@ client.on("message", (msg) => {
           return;
         }
 
-        await downloader.default(meme.url, meme.filename);
+       downloader.default(meme.url, meme.filename);
         msg.reply("Memes adicionados com sucesso");
       } catch (e) {
         msg.reply("Ocorreu um erro ao enviar a imagem");
@@ -309,26 +241,21 @@ client.on("message", (msg) => {
   };
 
   try {
-    let audio = false;
     let command = commands[userCommand];
-    console.log(userCommand);
     if (!command) {
       command = audiosCommands[userCommand];
-      audio = true;
     }
 
     if (!command && Object.values(members).includes(userCommand)) {
-      playAudio(memberLinks[userCommand], msg.member.voiceChannel, msg);
+     playAudio(client, msg, memberLinks[userCommand], queue);
     }
 
     if (command) {
-      command();
-      if (audio) {
-        playQueue();
-      }
+     command();
     }
+
   } catch (e) {
-    msg.channel.sender("Ocorreu algum erro, contate o criador do bot");
+    msg.channel.send("Ocorreu algum erro, contate o criador do bot");
     console.error(e);
   }
 });
