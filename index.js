@@ -183,7 +183,6 @@ client.on("message",  (msg) => {
   const commands = {
     /** Comandos gerais */
     queue: () => {
-      console.log(queue);
       const serverQueue = queue.get(msg.guild.id)
       if (!serverQueue || serverQueue.songs.length == 0) return msg.channel.send("❌ Não há nada tocando agora!")
       if (serverQueue.songs.length == 1) return msg.channel.send("❌ A Fila está vazia!")
@@ -192,6 +191,15 @@ client.on("message",  (msg) => {
         serverQueue.songs.slice(1).map(song => `- ${song.title}`).join("\n"),
         `**Tocando alguma:** ${serverQueue.songs[0].title}`
       ].join("\n\n"));
+    },
+    skip: () =>{
+      if (!msg.member.voice.channel) return msg.channel.send("❌ Você não está em um canal de voz!")
+
+      const serverQueue = queue.get(msg.guild.id)
+      if (!serverQueue) return msg.channel.send("❌ Não há nada jogando agora!")
+    
+      msg.channel.send("⏭ O Som foi pulado!");
+      return serverQueue.connection.dispatcher.end();
     },
     ajuda: () => msg.reply(helpMessage),
     help: () => msg.reply(helpMessage),

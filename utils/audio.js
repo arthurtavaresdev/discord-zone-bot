@@ -1,6 +1,10 @@
 module.exports.permissionRequired = 0
 
-const ytdl = require("ytdl-core"), ytpl = require("ytpl"), ytsr = require("ytsr"), { Util, TextChannel, Client, Message, VoiceChannel, VoiceConnection } = require("discord.js");
+const ytdl = require("ytdl-core"); 
+const ytpl = require("ytpl"); 
+const ytsr = require("ytsr"); 
+const { Util, TextChannel, Client, Message, VoiceChannel, VoiceConnection } = require("discord.js");
+const { isUrl } = require('./isUrl');
 
 /**
  * 
@@ -24,7 +28,7 @@ module.exports.playAudio = async (client, object, args, queue) => {
   if (!args.length) return await say(object.channel, "❌ Você precisa pesquisar um vídeo ou me fornecer um URL!");
 
   const url = Array.isArray(args) ? args.join(" ") : args;
-    
+
   if (url.includes("list=")) {
     const playlist = await ytpl(url.split("list=")[1])
     const videos = playlist.items;
@@ -37,32 +41,11 @@ module.exports.playAudio = async (client, object, args, queue) => {
       video = await ytdl.getBasicInfo(url)
     } catch(e) {
       try {
-        const results = await ytsr(url, { limit: 10 })
+        const results = await ytsr(url, {limit: 1});
         const videos = results.items
-        let index = 0;
 
         if (!videos.length) return await say(object.channel, "❌ Não encontrei nenhum resultado sobre este vídeo.");
-
-        const songSelectionMsg = [
-            "__**Song selection:**__",
-            videos.map(v => `${++index} - **${v.title}**`).join("\n"),
-            `**Selecione sua música enviando o número de 1 a ${videos.length} no bate-papo.**`
-          ].join("\n\n");
-
-        await say(object.channel, songSelectionMsg);
-
-        let response;
-        try {
-          response = await object.channel.awaitMessages(msg => 0 < parseInt(msg.content) && parseInt(msg.content) < videos.length + 1 && msg.author.id == object.author.id, {
-            max: 1,
-            time: 30000,
-            errors: ['time']
-          });
-        } catch(e) {
-          return say(object.channel, "❌ A seleção de vídeo expirou.");
-        }
-        const videoIndex = parseInt(response.first().content)
-        video = await ytdl.getBasicInfo(videos[videoIndex - 1].link.split("?v=")[1])
+        video = await ytdl.getBasicInfo(videos[0].url.split("?v=")[1])
       } catch(e) {
         console.error(e)
         return say(object.channel, "❌ Ocorreu um erro desconhecido.");
@@ -100,7 +83,7 @@ async function queueSong(video, object, voiceChannel, queue) {
       queue.set(object.guild.id, queueConstruct)
       playSong(object.guild, queue, queueConstruct.songs[0])
     } catch(e) {
-      console.log(e)
+      console.error(e)
       await say(object.channel, '❌ Ocorreu um erro desconhecido ao tentar entrar no canal de voz!');
       return queue.delete(object.guild.id)
     }
@@ -128,7 +111,6 @@ function playSong(guild, queue, song) {
   connection.play(ytdl(song.id, { filter: 'audioonly' }), { bitrate: 'auto' })
     .on("speaking", speaking => {
       if (!speaking) {
-        console.log(song);
         serverQueue.songs.shift();
         playSong(guild, queue, serverQueue.songs[0])
       }

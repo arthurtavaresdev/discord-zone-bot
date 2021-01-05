@@ -6,11 +6,17 @@ Este bot foi construido com intenção de ser algo divertido, para os membros.
 
 O Bot manda memes, adicionados pela comunidade e toca alguns audios, personalizadas pelos membros.
 
+## Vesão
+- Desenvolvido na versão 12.20.1 do *NodeJS*
+
 ## Instalação 
+
+
 Para as funções de música instalar ffmpeg.
 
 ### Ubuntu
 ```console
+sudo apt install build-essential 
 sudo apt install ffmpeg
 ```
 
