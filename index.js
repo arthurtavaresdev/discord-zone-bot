@@ -71,6 +71,11 @@ client.on("voiceStateUpdate",  (oldMember, newMember) => {
 
 
 let helpMessage = `
+Comando para musicas:
+  !play <link>|<nome da musica> = botzada toca uma musica
+  !skip = pular musica do bot
+  !queue = ver as musicas que estão para tocar.
+  !sair = limpar a fila e o bot para de tocar musicas.
 Comandos gerais:
   !meme = Te responde com um meme aleatorio
   !adicionar = Ao enviar uma imagem mais este comando, adiciona uma imagem ao banco de memes.
