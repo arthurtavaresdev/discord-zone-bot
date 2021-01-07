@@ -1,8 +1,8 @@
 module.exports.permissionRequired = 0
 
-const ytdl = require("ytdl-core"); 
-const ytpl = require("ytpl"); 
-const ytsr = require("ytsr"); 
+const ytdl = require("ytdl-core");
+const ytpl = require("ytpl");
+const ytsr = require("ytsr");
 const { Util, TextChannel, Client, Message, VoiceChannel, VoiceConnection } = require("discord.js");
 const { isUrl } = require('./isUrl');
 
@@ -39,19 +39,19 @@ module.exports.playAudio = async (client, object, args, queue) => {
     let video;
     try {
       video = await ytdl.getBasicInfo(url)
-    } catch(e) {
+    } catch (e) {
       try {
-        const results = await ytsr(url, {limit: 1});
+        const results = await ytsr(url, { limit: 1 });
         const videos = results.items
 
         if (!videos.length) return await say(object.channel, "❌ Não encontrei nenhum resultado sobre este vídeo.");
         video = await ytdl.getBasicInfo(videos[0].url.split("?v=")[1])
-      } catch(e) {
+      } catch (e) {
         console.error(e)
         return say(object.channel, "❌ Ocorreu um erro desconhecido.");
       }
     }
-    
+
     await say(object.channel, `✅ O Som **${video.videoDetails.title}** foi adicionado a fila!`);
     return await queueSong(video, object, voiceChannel, queue)
   }
@@ -59,7 +59,7 @@ module.exports.playAudio = async (client, object, args, queue) => {
 
 async function queueSong(video, object, voiceChannel, queue) {
   const serverQueue = queue.get(object.guild.id);
-  
+
   const song = {
     id: video.videoDetails.videoId,
     title: Util.escapeMarkdown(video.videoDetails.title),
@@ -72,7 +72,7 @@ async function queueSong(video, object, voiceChannel, queue) {
       voiceChannel,
       connection: null,
       songs: [song],
-      volume: 50,
+      volume: 80,
       playing: true
     }
 
@@ -82,7 +82,7 @@ async function queueSong(video, object, voiceChannel, queue) {
       queueConstruct.connection = connection;
       queue.set(object.guild.id, queueConstruct)
       playSong(object.guild, queue, queueConstruct.songs[0])
-    } catch(e) {
+    } catch (e) {
       console.error(e)
       await say(object.channel, '❌ Ocorreu um erro desconhecido ao tentar entrar no canal de voz!');
       return queue.delete(object.guild.id)
@@ -106,7 +106,7 @@ function playSong(guild, queue, song) {
    * @type {VoiceConnection}
    */
   const connection = serverQueue.connection;
- 
+
   say(serverQueue.textChannel, `🎶 Agora tocando ** ${song.title} **`);
   connection.play(ytdl(song.id, { filter: 'audioonly' }), { bitrate: 'auto' })
     .on("speaking", speaking => {
@@ -117,13 +117,13 @@ function playSong(guild, queue, song) {
     })
     .on("error", console.error)
     .setVolumeLogarithmic(serverQueue.volume / 250)
-    
+
 }
 
-async function say(channel, msg){
-    if(channel instanceof TextChannel){
-        channel.send(msg);
-    } else {
-        console.log(msg);
-    }
+async function say(channel, msg) {
+  if (channel instanceof TextChannel) {
+    channel.send(msg);
+  } else {
+    console.log(msg);
+  }
 }

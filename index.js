@@ -41,7 +41,7 @@ const members = {
   "254789073691082753": "joni",
   "233795749916180490": "leon",
   "370694977757380608": "luisa",
-  "204328361164537856": "josi",
+  "793668516129144883": "josi",
   "233266831098380288": "makense",
   "505751378145050629": "scopel",
   "233303134804508672": "shacal",
@@ -50,7 +50,7 @@ const members = {
 };
 
 
-client.on("voiceStateUpdate",  (oldMember, newMember) => {
+client.on("voiceStateUpdate", (oldMember, newMember) => {
   const voiceChannel = newMember.channel;
   const oldMemberChannel = oldMember.channel;
   if (voiceChannel && !oldMemberChannel) {
@@ -58,9 +58,9 @@ client.on("voiceStateUpdate",  (oldMember, newMember) => {
     try {
       let member = members[memberId];
       if (member) {
-       playAudio(client, newMember, memberLinks[member], queue);
+        playAudio(client, newMember, memberLinks[member], queue);
       } else if (!newMember.member.user.bot) {
-       playAudio(client,newMember,memberLinks["meuquerido"], queue);
+        playAudio(client, newMember, memberLinks["meuquerido"], queue);
       }
     } catch (e) {
       console.error(e);
@@ -76,6 +76,7 @@ Comando para musicas:
   !skip = pular musica do bot
   !queue = ver as musicas que estão para tocar.
   !sair = limpar a fila e o bot para de tocar musicas.
+  !volume = para ajustar o volume de alguma musica. ex: (!volume 100);
 Comandos gerais:
   !meme = Te responde com um meme aleatorio
   !adicionar = Ao enviar uma imagem mais este comando, adiciona uma imagem ao banco de memes.
@@ -118,69 +119,69 @@ Audios Meu querido:
   !shacal
 `;
 
-client.on("message",  (msg) => {
+client.on("message", (msg) => {
   const args = msg.content.slice(prefix.length).trim().split(/ +/g);
   const userCommand = args.shift().toLowerCase();
 
   const audiosCommands = {
     /** Tocando memes de altissima qualidade. */
-    play:  () =>  playAudio(client, msg, args, queue),
+    play: () => playAudio(client, msg, args, queue),
     teste: () => playAudio(client, msg, "https://www.youtube.com/watch?v=9wcg57VnkNI", queue),
-    moises:  () =>
+    moises: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=6GfqT-HKsY8", queue),
-    mentira:  () =>
+    mentira: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=ViesudGoHKM", queue),
-    tabom:  () =>
+    tabom: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=hs91TFUdqdU", queue),
-    vocair:  () =>
+    vocair: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=ihJp_tWnvQc", queue),
-    aiai:  () =>
+    aiai: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=yCJV6VrOxBA", queue),
-    marilene:  () =>
+    marilene: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=z7-ZYXpJ_EU", queue),
-    eusoulouco:  () =>
+    eusoulouco: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=TpAu95MjO0I", queue),
-    burro:  () =>
+    burro: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=lOxSDaTfujU", queue),
-    irineu:  () =>
+    irineu: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=Odu55a5QtTE", queue),
-    numsei:  () =>
+    numsei: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=IHa5f4MWu1I", queue),
-    pele:  () =>
+    pele: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=-vut5q_Z3Rc", queue),
-    faliceu:  () =>
+    faliceu: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=8GIdYXBqu1s", queue),
-    demencia:  () =>
+    demencia: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=-kDO0rvwyiE", queue),
-    querocafe:  () =>
+    querocafe: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=VxRpkfcXEpA", queue),
-    paodebatata:  () =>
+    paodebatata: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=sGci6pVA4D8", queue),
-    senhora:  () =>
+    senhora: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=sNOw2WVIYow", queue),
-    muitoforte:  () =>
+    muitoforte: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=KfjAQ9glCxE", queue),
-    mula:  () =>
+    mula: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=ZOOwJHneaqs", queue),
-    paraocarro:  () =>
+    paraocarro: () =>
       playAudio(
         client, msg, "https://www.youtube.com/watch?v=buVRBF9HGH8", queue),
   };
@@ -197,18 +198,29 @@ client.on("message",  (msg) => {
         `**Tocando alguma:** ${serverQueue.songs[0].title}`
       ].join("\n\n"));
     },
-    skip: () =>{
+    volume: () => {
+      const serverQueue = queue.get(msg.guild.id);
+      if (!serverQueue) return msg.channel.send('❌ Você não pode ajustar o volume dessa fila');
+      if (!args[0]) return msg.channel.send(`🔉 O Volume atual é ${serverQueue.volume}`);
+      const volume = parseInt(args[0])
+      if (!volume || volume > 150) return msg.channel.send("❌ Nível de volume inválido, escolha um número entre 1 e 150!")
+
+      serverQueue.volume = volume;
+      serverQueue.connection.dispatcher.setVolumeLogarithmic(volume / 250);
+      return msg.channel.send(`🔊 O volume é agora ${volume}!`)
+    },
+    skip: () => {
       if (!msg.member.voice.channel) return msg.channel.send("❌ Você não está em um canal de voz!")
 
       const serverQueue = queue.get(msg.guild.id)
       if (!serverQueue) return msg.channel.send("❌ Não há nada jogando agora!")
-    
+
       msg.channel.send("⏭ O Som foi pulado!");
       return serverQueue.connection.dispatcher.end();
     },
     ajuda: () => msg.reply(helpMessage),
     help: () => msg.reply(helpMessage),
-    meme:  () => {
+    meme: () => {
       const file = meme.randomFile();
       msg.reply("Um meme bolado pra tu consagrado", {
         files: [file],
@@ -218,7 +230,7 @@ client.on("message",  (msg) => {
       msg.member.voice.channel.leave()
       queue = new Map();
     },
-    adicionar:  () => {
+    adicionar: () => {
       try {
         let meme = msg.attachments.first();
 
@@ -232,7 +244,7 @@ client.on("message",  (msg) => {
           return;
         }
 
-       downloader.default(meme.url, meme.filename);
+        downloader.default(meme.url, meme.filename);
         msg.reply("Memes adicionados com sucesso");
       } catch (e) {
         msg.reply("Ocorreu um erro ao enviar a imagem");
@@ -260,11 +272,11 @@ client.on("message",  (msg) => {
     }
 
     if (!command && Object.values(members).includes(userCommand)) {
-     playAudio(client, msg, memberLinks[userCommand], queue);
+      playAudio(client, msg, memberLinks[userCommand], queue);
     }
 
     if (command) {
-     command();
+      command();
     }
 
   } catch (e) {
