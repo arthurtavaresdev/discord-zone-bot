@@ -14,19 +14,19 @@ client.login(process.env.TOKEN);
 
 const memberLinks = {
   meuquerido: "https://www.youtube.com/watch?v=ShWb9wIWp7c",
-  "22k": "https://youtu.be/xpfsUqVEyHM",
-  leon: "https://youtu.be/0BfJvyHBOII",
+  "22k": "https://www.youtube.com/watch?v=xpfsUqVEyHM",
+  leon: "https://www.youtube.com/watch?v=0BfJvyHBOII",
   urisse: "https://www.youtube.com/watch?v=H2iAL0Rbq6g",
   makense: "https://www.youtube.com/watch?v=9wcg57VnkNI",
   josi: "https://www.youtube.com/watch?v=NFjzhT3qAA0",
   luisa: "https://www.youtube.com/watch?v=lzzM1k0bt7U",
-  gago: "https://youtu.be/zDDT2JvglSk",
+  gago: "https://www.youtube.com/watch?v=zDDT2JvglSk",
   tuzao: "https://www.youtube.com/watch?v=yOEa1YK-SDg",
   joni: "https://www.youtube.com/watch?v=JXqXSfppOTY",
-  scopel: "https://youtu.be/15lba7DIvkQ",
-  shacal: "https://youtu.be/l_pBaFk73rg",
-  jm: "https://youtu.be/4WuU7XXOADM",
+  scopel: "https://www.youtube.com/watch?v=15lba7DIvkQ",
+  jm: "https://www.youtube.com/watch?v=4WuU7XXOADM",
   edu: "https://www.youtube.com/watch?v=hlr8cCsAr7g",
+  wazowski: "https://www.youtube.com/watch?v=9ep9b10H5-w"
 };
 
 client.on("ready", () => {
@@ -36,7 +36,7 @@ client.on("ready", () => {
 const members = {
   "233266768095870977": "tuzao",
   "352169790212669460": "22k",
-  233271179794710530: "urisse",
+  "233271179794710530": "urisse",
   "267081042937118721": "gago",
   "254789073691082753": "joni",
   "233795749916180490": "leon",
@@ -47,6 +47,7 @@ const members = {
   "233303134804508672": "shacal",
   "335991054585167872": "jm",
   "403860012532760576": "edu",
+  "836045291324702730": "wazowski"
 };
 
 

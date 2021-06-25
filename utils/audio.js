@@ -1,11 +1,9 @@
 module.exports.permissionRequired = 0
 
-const ytdl = require("ytdl-core");
+const ytdl = require("../lib/ytdl-core");
 const ytpl = require("ytpl");
 const ytsr = require("ytsr");
 const { Util, TextChannel, Client, Message, VoiceChannel, VoiceConnection } = require("discord.js");
-const { isUrl } = require('./isUrl');
-
 /**
  * 
  * @param {Client} client 
@@ -38,7 +36,7 @@ module.exports.playAudio = async (client, object, args, queue) => {
   } else {
     let video;
     try {
-      video = await ytdl.getBasicInfo(url)
+      video = await ytdl.getBasicInfo(url,  {filter: 'audioonly'})
     } catch (e) {
       try {
         const results = await ytsr(url, { limit: 1 });
