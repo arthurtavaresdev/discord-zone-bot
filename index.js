@@ -2,8 +2,10 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const { playAudio } = require("./utils/audio");
-const util = require('util');
-
+const { DateTime } = require("luxon");
+const cron = require('node-cron');
+const path = require('path');
+const googleSpredSheet = require('./utils/google-spredsheet')
 const prefix = "!";
 
 const meme = require("./utils/randomFile");
@@ -11,7 +13,6 @@ const downloader = require("./utils/downloaderImage");
 let queue = new Map();
 
 client.login(process.env.TOKEN);
-
 const memberLinks = {
   meuquerido: "https://www.youtube.com/watch?v=ShWb9wIWp7c",
   "22k": "https://www.youtube.com/watch?v=xpfsUqVEyHM",
@@ -31,7 +32,38 @@ const memberLinks = {
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.username}`);
+
+  try {
+    cron.schedule('1 0 * * *', () => {
+
+      console.log('running a task every minute');
+      niver();
+    }, {
+      scheduled: true,
+      timezone: "America/Sao_Paulo"
+    });
+  } catch (e) {
+    console.error(e);
+  }
 });
+
+async function niver() {
+  const csvPath = path.resolve(__dirname, 'assets', 'csv', 'nivers.csv');
+  const result = await googleSpredSheet(csvPath);
+  console.log(result);
+  const niver = result.find(data => {
+    const current_date = DateTime.now().setZone("America/Sao_Paulo").setLocale('br').toLocaleString();
+    return data.birth_date == current_date;
+  }) || false;
+
+  console.log('Hoje é aniversario de algum membro ?', niver ? 'Sim' : 'Não');
+  
+  if(niver || niver.length == 0){
+    const channel = client.channels.cache.get('233267409191043072');
+    channel.send(`@everyone Hoje é aniversario do(a) ${niver.name} 🥳🥳`);
+  }
+  
+}
 
 const members = {
   "233266768095870977": "tuzao",
