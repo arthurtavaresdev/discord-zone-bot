@@ -3,7 +3,7 @@ const {getMemberByID} = require("../members");
 module.exports = {
 	async run(client, message) {
 		const member = getMemberByID(message.mentions.members.first().id);
-		await playAudio(client, message, member);
+		await playAudio(client, message, member.audio);
 	},
 	async validate(client, message, [state]) {
 		const voiceChannel = message.member.voice.channel;
@@ -15,7 +15,7 @@ module.exports = {
 	},
 	get command() {
 		return {
-			name: 'Bem vindo',
+			name: 'welcome',
 			description: 'Reproduz um audio dandos boas vindas.',
 			usage: '!welcome <member>',
 		};

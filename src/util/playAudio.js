@@ -5,7 +5,7 @@ const {  Client, Message, VoiceChannel, TextChannel} = require("discord.js");
  * @param {Message | VoiceState} object 
  * @param {Object} member 
  */
-module.exports.playAudio = async (client, object, member) => {
+module.exports.playAudio = async (client, object, audio, options = {}) => {
     /**
      * @type {VoiceChannel}
      */
@@ -13,19 +13,12 @@ module.exports.playAudio = async (client, object, member) => {
 
     try{
         const connection = await voiceChannel.join();
-        await connection.play(member.audio);
-        connection.on('finish', end => voiceChannel.leave());
+        connection.play(audio, options)
+            .on('error', () => voiceChannel.leave())
+            .on('failed', () => voiceChannel.leave());
 
 
     }catch(e){
         console.log('[#LOG]', `Ocorreu um erro:  ${e}`);
-    }
-}
-
-async function say(channel, msg) {
-    if (channel instanceof TextChannel) {
-        channel.send(msg);
-    } else {
-        console.log(msg);
     }
 }

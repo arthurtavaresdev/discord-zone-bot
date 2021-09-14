@@ -56,7 +56,7 @@ const runCommand = async (client, message) => {
 };
 
 module.exports = async (client, message) => {
-	// if (message.author.bot) return;
+	if (message.author.bot) return;
 
 	await Promise.all([
 		runCommand(client, message),
