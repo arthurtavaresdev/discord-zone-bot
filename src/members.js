@@ -70,6 +70,21 @@ const members = [
         "id": "836045291324702730",
         "name": "wazowski",
         "audio": path.resolve(__dirname,'..','assets', 'audios', 'wazowski.mp3')
+    },
+    {
+        "id": '272479290623262724',
+        "audio": path.resolve(__dirname, '..', 'assets', 'audios', 'ganso.mp3'),
+        "name": "ganso"
+    },
+    {
+        "id": '514232256089554970',
+        "audio": path.resolve(__dirname, '..', 'assets', 'audios', 'larissa.mp3'),
+        "name": "larissa"
+    },
+    {
+        "id": '964309478684102656',
+        "audio": path.resolve(__dirname, '..', 'assets', 'audios', 'migas.mp3'),
+        "name": "migas"
     }
 ]
 
