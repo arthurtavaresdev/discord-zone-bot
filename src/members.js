@@ -82,9 +82,19 @@ const members = [
         "name": "larissa"
     },
     {
-        "id": '964309478684102656',
+        "id": '175938874160185345',
         "audio": path.resolve(__dirname, '..', 'assets', 'audios', 'migas.mp3'),
         "name": "migas"
+    },
+    {
+        "id": '325189912817303556',
+        "audio": path.resolve(__dirname, '..', 'assets', 'audios', 'ceci.mp3' ),
+        "name": "ceci"
+    },
+    {
+        "id": '289438596040228865',
+        "audio": path.resolve(__dirname, '..', 'assets', 'audios', 'mateus.mp3' ),
+        "name": "mateus"
     }
 ]
 
